@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" id="WebApp_ID" version="2.5">
+  <display-name>OrderTracker</display-name>
+  <welcome-file-list>
+    <welcome-file>index.html</welcome-file>
+    <welcome-file>index.htm</welcome-file>
+    <welcome-file>index.jsp</welcome-file>
+    <welcome-file>default.html</welcome-file>
+    <welcome-file>default.htm</welcome-file>
+    <welcome-file>default.jsp</welcome-file>
+  </welcome-file-list>
+  <servlet>
+    <description></description>
+    <display-name>SummaryServlet</display-name>
+    <servlet-name>SummaryServlet</servlet-name>
+    <servlet-class>SummaryServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>SummaryServlet</servlet-name>
+    <url-pattern>/SummaryServlet</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>VendorServlet</display-name>
+    <servlet-name>VendorServlet</servlet-name>
+    <servlet-class>VendorServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>VendorServlet</servlet-name>
+    <url-pattern>/VendorServlet</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>TrackerServlet</display-name>
+    <servlet-name>TrackerServlet</servlet-name>
+    <servlet-class>TrackerServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>TrackerServlet</servlet-name>
+    <url-pattern>/TrackerServlet</url-pattern>
+  </servlet-mapping>
+</web-app>
