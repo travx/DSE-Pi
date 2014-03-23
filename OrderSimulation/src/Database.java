@@ -57,8 +57,8 @@ public class Database {
 		builder.addContactPoints(nodes);
 		
 		//Connection Options
-		builder.socketOptions().setConnectTimeoutMillis(60000);
-		builder.socketOptions().setReadTimeoutMillis(60000);
+		builder.socketOptions().setConnectTimeoutMillis(100);
+		builder.socketOptions().setReadTimeoutMillis(10000);
 		builder.withRetryPolicy(DowngradingConsistencyRetryPolicy.INSTANCE);
 		builder.withReconnectionPolicy(new ConstantReconnectionPolicy(100));
 		
