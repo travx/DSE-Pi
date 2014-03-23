@@ -128,7 +128,7 @@ function new_data(){
 }
 
 
-setInterval(function(){new_data()}, 10000);
+setInterval(function(){new_data()}, 5000);
 
 
 </script>        
