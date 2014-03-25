@@ -21,7 +21,8 @@ public class TrackerServlet extends HttpServlet {
     public TrackerServlet() {
         super();
         // TODO Auto-generated constructor stub
-		String nodes[] = {"ras1", "ras2", "ras3"};
+		//String nodes[] = {"ras1", "ras2", "ras3"};
+        String nodes[] = {"ras1"};
 		db = new Database(nodes, "simulation");
 		db.connect();
     }
