@@ -27,7 +27,8 @@ public class RunSimulation {
 		
 		System.out.println("Connecting to Cluster.");
 		
-		String nodes[] = {"ras1", "ras2", "ras3", "ras11", "ras12", "ras13"};
+		String nodes[] = {"ras1"};
+		//String nodes[] = {"ras1", "ras2", "ras3", "ras11", "ras12", "ras13"};
 		//String nodes[] = {"debian1"};
 		Database db = new Database(nodes, "simulation");
 		db.connect();

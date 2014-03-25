@@ -59,7 +59,7 @@ public class Database {
 		//Connection Options
 		builder.socketOptions().setConnectTimeoutMillis(100);
 		builder.socketOptions().setReadTimeoutMillis(10000);
-		builder.withRetryPolicy(DowngradingConsistencyRetryPolicy.INSTANCE);
+		//builder.withRetryPolicy(DowngradingConsistencyRetryPolicy.INSTANCE);
 		builder.withReconnectionPolicy(new ConstantReconnectionPolicy(100));
 		
 		cluster = builder.build();
