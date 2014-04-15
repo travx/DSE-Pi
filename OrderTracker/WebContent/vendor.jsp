@@ -9,7 +9,7 @@
   <link rel="stylesheet" type="text/css" href="default.css">
     <script type="text/javascript" src="scripts/jchartfx/js/jchartfx.system.js"></script>
     <script type="text/javascript" src="scripts/jchartfx/js/jchartfx.coreVector.js"></script>
-     <script type="text/javascript" src="scripts/jchartfx/js/jchartfx.animation.js"></script>  
+    <script type="text/javascript" src="scripts/jchartfx/js/jchartfx.animation.js"></script>  
     <script src="scripts/jquery-latest.min.js"></script>
     
 <script type="text/javascript">
