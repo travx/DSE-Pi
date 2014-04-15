@@ -10,8 +10,6 @@ public class PriceBuilder {
 		Database db = new Database(nodes, "simulation");
 		Random rand = new Random();
 		
-		db.connect();
-		
 		List<Product> products = db.getProducts();
 		
 		for (Product prod:products){
