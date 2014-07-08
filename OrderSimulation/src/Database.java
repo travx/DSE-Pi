@@ -38,6 +38,7 @@ public class Database {
 	private PreparedStatement psProductDetail;
 	private PreparedStatement psGetProductDetail;
 	private PreparedStatement psUpdateProductPrices;
+	private PreparedStatement psGetSingleProductSummary;
 	
 	private String sProducts = "select * from product";
 	private String sProduct = "select * from product_price where product_id=?";
@@ -51,6 +52,7 @@ public class Database {
 	private String sVendorDetails = "update vendor_detail set orders=orders+1, revenue=revenue+?, profit=profit+? where vendor=? and seconds=?;";
 	private String sGetVendorDetails = "select * from vendor_detail where vendor=? limit 20;";
 	private String sGetProductSummary = "select * from product_summary where vendor=?";
+	private String sGetSingleProductSummary = "select * from product_summary where vendor=? and product_id=?";
 	private String sGetProductSummaryAll = "select * from product_summary";
 	private String sProductDetail = "update product_detail set orders=orders+1, revenue=revenue+?, profit=profit+? where product_id=? and seconds=?;";
 	private String sGetProductDetail = "select * from product_detail where product_id=? limit 20;";
@@ -102,8 +104,8 @@ public class Database {
 		writeSummary(pp);
 		writeVendorSummary(pp);
 		writeProductSummary(pp);
-		writeVendorDetails(pp);
-		writeProductDetails(pp);
+		//writeVendorDetails(pp);
+		//writeProductDetails(pp);
 	}
 	
 	public void writeSummary(ProductPrice pp){
@@ -123,16 +125,18 @@ public class Database {
 	
 	public void writeVendorDetails(ProductPrice pp){
 		if (psVendorDetails == null) psVendorDetails = session.prepare(sVendorDetails);
-		DateTime dt = new DateTime();
-		Double seconds = (double) (dt.getDayOfYear() * 100000) + (dt.getSecondOfDay()/10.0);
-		session.execute(psVendorDetails.bind(pp.getRetail_price_long(), pp.getProfit_long(), pp.getVendor(), seconds.intValue()));
+		DateTime dt = new DateTime().secondOfDay().roundFloorCopy();
+//		Double seconds = (double) (dt.getDayOfYear() * 100000) + (dt.getSecondOfDay()/10.0);
+//		session.execute(psVendorDetails.bind(pp.getRetail_price_long(), pp.getProfit_long(), pp.getVendor(), seconds.intValue()));
+		session.execute(psVendorDetails.bind(pp.getRetail_price_long(), pp.getProfit_long(), pp.getVendor(), dt.toDate()));
 	}	
 
 	public void writeProductDetails(ProductPrice pp){
 		if (psProductDetail == null) psProductDetail = session.prepare(sProductDetail);
-		DateTime dt = new DateTime();
-		Double seconds = (double) (dt.getDayOfYear() * 100000) + (dt.getSecondOfDay()/10.0);
-		session.execute(psProductDetail.bind(pp.getRetail_price_long(), pp.getProfit_long(), pp.getProduct_id(), seconds.intValue()));
+		DateTime dt = new DateTime().secondOfDay().roundFloorCopy();
+//		Double seconds = (double) (dt.getDayOfYear() * 100000) + (dt.getSecondOfDay()/10.0);
+//		session.execute(psProductDetail.bind(pp.getRetail_price_long(), pp.getProfit_long(), pp.getProduct_id(), seconds.intValue()));
+		session.execute(psProductDetail.bind(pp.getRetail_price_long(), pp.getProfit_long(), pp.getProduct_id(), dt.toDate()));
 	}		
 	
 	public List<Product> getProducts(){
@@ -147,6 +151,7 @@ public class Database {
 		
 		return products;
 	}
+
 	
 	public List<ProductPrice> getProductPrices(){
 		if (psProductPrices == null) psProductPrices = session.prepare(sProductPrices);
@@ -207,6 +212,19 @@ public class Database {
 		
 		return new Gson().toJson(pslist);		
 	}
+	
+	public String getProductSummary(String vendor, String product_id){
+		if (psGetSingleProductSummary == null) psGetSingleProductSummary = session.prepare(sGetSingleProductSummary);
+		
+		ResultSet results = session.execute(psGetSingleProductSummary.bind(vendor, product_id));
+		List<ProductSummary> pslist = new ArrayList<ProductSummary>();
+		
+		for (Row row:results){
+			pslist.add(new ProductSummary(row));
+		}
+		
+		return new Gson().toJson(pslist);		
+	}	
 	
 	public String getProductSummary(){
 		if (psGetProductSummaryAll == null) psGetProductSummaryAll = session.prepare(sGetProductSummaryAll);

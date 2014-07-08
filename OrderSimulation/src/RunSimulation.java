@@ -27,9 +27,10 @@ public class RunSimulation {
 		
 		System.out.println("Connecting to Cluster.");
 		
-		String nodes[] = {"ras1"};
+		//String nodes[] = {"ras1"};
+		//String nodes[] = {"ubuntu"};
+		String nodes[] = {"localhost"};
 		Database db = new Database(nodes, "simulation");
-		//db.connect();
 		
 		System.out.println("Success! Cluster connection established. Ready to process orders.");
 		System.out.println("Running simulation.");

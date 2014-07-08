@@ -4,12 +4,16 @@ import com.datastax.driver.core.Row;
 public class ProductSummary {
 	private String vendor;
 	private String product_id;
+	private long orders;
 	private long profit;
-	
+	private long revenue;
+
 	public ProductSummary(Row row){
 		this.setProduct_id(row.getString("product_id"));
 		this.setProfit(row.getLong("profit"));
 		this.setVendor(row.getString("vendor"));
+		this.setOrders(row.getLong("orders"));
+		this.setRevenue(row.getLong("revenue"));
 	}
 	
 	public String getVendor() {
@@ -29,6 +33,22 @@ public class ProductSummary {
 	}
 	public void setProfit(long profit) {
 		this.profit = profit;
+	}
+	
+	public long getOrders() {
+		return orders;
+	}
+
+	public void setOrders(long orders) {
+		this.orders = orders;
+	}
+
+	public long getRevenue() {
+		return revenue;
+	}
+
+	public void setRevenue(long revenue) {
+		this.revenue = revenue;
 	}
 	
 }
