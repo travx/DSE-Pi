@@ -56,7 +56,7 @@ function new_data(){
 function get_products(){
     $.getJSON('TrackerServlet?action=vendorproducts&vendor=<%=request.getParameter("vendor")%>', function(data) {
         $.each(data, function(i, item) {
-            $('#results').append($('<tr><td><a href="product.jsp?product_id=' + item.product_id + '">'+item.product_id+'</a></td><td>'+item.profit+'</td></tr>'));
+            $('#results').append($('<tr><td><a href="product.jsp?vendor=<%=request.getParameter("vendor")%>&product_id=' + item.product_id + '">'+item.product_id+'</a></td><td>'+item.profit+'</td></tr>'));
         });
      });
 }

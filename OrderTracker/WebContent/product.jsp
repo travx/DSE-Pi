@@ -25,27 +25,11 @@ function loadPage(){
 function loadChart(){	
 	chart_products = new cfx.Chart();
 	chart_products.getAnimations().getLoad().setEnabled(true);
-	chart_products.setGallery(cfx.Gallery.Lines);  
+	chart_products.setGallery(cfx.Gallery.Bar);  
 	
-	var fields = chart_products.getDataSourceSettings().getFields();
-	var field1 = new cfx.FieldMap();
-	var field2 = new cfx.FieldMap();
-	var field3 = new cfx.FieldMap();
-	
-	field1.setName("seconds");
-	field1.setDisplayName("Time");
-	field1.setUsage(cfx.FieldUsage.Label);
-	fields.add(field1);
-	
-	field2.setName("profit");
-	field2.setDisplayName("Profit");
-	field2.setUsage(cfx.FieldUsage.Value);
-	fields.add(field2);	
-	
-	field3.setName("revenue");
-	field3.setDisplayName("Revenue");
-	field3.setUsage(cfx.FieldUsage.Value);
-	fields.add(field3);		
+	var axisY2 = chart_products.getAxisY2();
+	var order_series = chart_products.getSeries().getItem(0);
+	order_series.setAxisY(axisY2);	
 	
 	var divHolder = document.getElementById('Chart');
 	chart_products.create(divHolder);
@@ -53,7 +37,7 @@ function loadChart(){
 
 
 function new_data(){
-    $.getJSON('TrackerServlet?action=productsales&product_id=<%=request.getParameter("product_id")%>', function(data) {
+    $.getJSON('TrackerServlet?action=productsales&vendor=<%=request.getParameter("vendor")%>&product_id=<%=request.getParameter("product_id")%>', function(data) {
     	chart_products.setDataSource(data);
         });
 }

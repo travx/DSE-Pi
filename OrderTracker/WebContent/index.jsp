@@ -9,7 +9,8 @@
   <link rel="stylesheet" type="text/css" href="default.css">
     <script type="text/javascript" src="scripts/jchartfx/js/jchartfx.system.js"></script>
     <script type="text/javascript" src="scripts/jchartfx/js/jchartfx.coreVector.js"></script>
-     <script type="text/javascript" src="scripts/jchartfx/js/jchartfx.animation.js"></script>  
+    <script type="text/javascript" src="scripts/jchartfx/js/jchartfx.animation.js"></script>
+    <script type="text/javascript" src="scripts/jchartfx/js/jchartfx.advanced.js"></script>   
     <script src="scripts/jquery-latest.min.js"></script>  
     
 <script type="text/javascript">
@@ -18,13 +19,19 @@ var chart_summary;
 var chart_vendorsummary;
 var chart_popcorn;
 var chart_magnolia;
+var revenue = [0,0];
+var profit = [0,0];
+var tot_revenue = [0,0];
+var tot_profit = [0,0];
+var vendor = ["Vendor1", "Vendor2"];
 
 function loadPage(){
+	initial_data();
 	loadSummary();
 	loadVendorSummary();
 	loadPopcorn();
 	loadMagnolia();
-	new_data();
+	//new_data();
 }
 
 function loadSummary(){	
@@ -58,25 +65,20 @@ function loadPopcorn(){
 	chart_popcorn.getAnimations().getLoad().setEnabled(true);
 	chart_popcorn.setGallery(cfx.Gallery.Lines);  
 	
-	var fields = chart_popcorn.getDataSourceSettings().getFields();
-	var field1 = new cfx.FieldMap();
-	var field2 = new cfx.FieldMap();
-	var field3 = new cfx.FieldMap();
+	var axisY = chart_popcorn.getAxisY();
+	axisY.setMin(0);
+	axisY.setMax(15000);
 	
-	field1.setName("seconds");
-	field1.setDisplayName("Time");
-	field1.setUsage(cfx.FieldUsage.Label);
-	fields.add(field1);
+	var data = chart_popcorn.getData();
+	data.setPoints(20);
+	data.setSeries(2);
 	
-	field2.setName("revenue");
-	field2.setDisplayName("Revenue");
-	field2.setUsage(cfx.FieldUsage.Value);
-	fields.add(field2);
-	
-	field3.setName("profit");
-	field3.setDisplayName("Profit");
-	field3.setUsage(cfx.FieldUsage.Value);
-	fields.add(field3);	
+	chart_popcorn.getSeries().getItem(0).setText("Revenue");
+	chart_popcorn.getSeries().getItem(1).setText("Profit");
+
+	var realTime = chart_popcorn.getRealTime();
+	realTime.setBufferSize(20);
+	realTime.setMode(cfx.RealTimeMode.Scroll);
 	
 	var divHolder = document.getElementById('Popcorn');
 	chart_popcorn.create(divHolder);
@@ -87,28 +89,43 @@ function loadMagnolia(){
 	chart_magnolia.getAnimations().getLoad().setEnabled(true);
 	chart_magnolia.setGallery(cfx.Gallery.Lines);
 	
-	var fields = chart_magnolia.getDataSourceSettings().getFields();
-	var field1 = new cfx.FieldMap();
-	var field2 = new cfx.FieldMap();
-	var field3 = new cfx.FieldMap();
+	var axisY = chart_magnolia.getAxisY();
+	axisY.setMin(0);
+	axisY.setMax(15000);
 	
-	field1.setName("seconds");
-	field1.setDisplayName("Time");
-	field1.setUsage(cfx.FieldUsage.Label);
-	fields.add(field1);
+	var data = chart_magnolia.getData();
+	data.setPoints(20);
+	data.setSeries(2);
 	
-	field2.setName("revenue");
-	field2.setDisplayName("Revenue");
-	field2.setUsage(cfx.FieldUsage.Value);
-	fields.add(field2);
-	
-	field3.setName("profit");
-	field3.setDisplayName("Profit");
-	field3.setUsage(cfx.FieldUsage.Value);
-	fields.add(field3);		
+	chart_magnolia.getSeries().getItem(0).setText("Revenue");
+	chart_magnolia.getSeries().getItem(1).setText("Profit");	
+
+	var realTime = chart_magnolia.getRealTime();
+	realTime.setBufferSize(20);
+	realTime.setMode(cfx.RealTimeMode.Scroll);	
 	
 	var divHolder = document.getElementById('Magnolia');
 	chart_magnolia.create(divHolder);
+}
+
+
+function initial_data(){
+    $.getJSON('TrackerServlet?action=vendorsummary', function(data) {
+    	$.each(data, function(index, element) {
+    		revenue[index] = element.revenue - tot_revenue[index];
+    		tot_revenue[index] = element.revenue;
+    		profit[index] = element.profit - tot_profit[index];
+    		tot_profit[index] = element.profit;
+    		vendor[index] = element.vendor;
+    	});
+    	
+        $("#vendor1").append("<h3><strong>" + vendor[0] + "</strong></h3>");
+        $("#vendor1").append("<a href=vendor.jsp?vendor=" + encodeURIComponent(vendor[0]) + ">View Products</a>");
+        
+        $("#vendor2").append("<h3><strong>" + vendor[1] + "</strong></h3>");
+        $("#vendor2").append("<a href=vendor.jsp?vendor=" + encodeURIComponent(vendor[1]) + ">View Products</a>");
+        
+    }); 	
 }
 
 
@@ -118,17 +135,32 @@ function new_data(){
         });
     $.getJSON('TrackerServlet?action=vendorsummary', function(data) {
     	chart_vendorsummary.setDataSource(data);
+    	$.each(data, function(index, element) {
+    		revenue[index] = element.revenue - tot_revenue[index];
+    		tot_revenue[index] = element.revenue;
+    		profit[index] = element.profit - tot_profit[index];
+    		tot_profit[index] = element.profit;
+    	});
+    	chart_popcorn.getRealTime().beginAddData(1, cfx.RealTimeAction.Append);
+    	chart_popcorn.getData().setItem(0,0,revenue[0]);
+    	chart_popcorn.getData().setItem(1,0,profit[0]);
+    	chart_popcorn.getRealTime().endAddData(false,false);
+    	
+    	chart_magnolia.getRealTime().beginAddData(1, cfx.RealTimeAction.Append);
+    	chart_magnolia.getData().setItem(0,0,revenue[1]);
+    	chart_magnolia.getData().setItem(1,0,profit[1]);
+    	chart_magnolia.getRealTime().endAddData(false,false);
         });
-    $.getJSON('TrackerServlet?action=vendor&vendor=Better%20Brews', function(data) {
-    	chart_popcorn.setDataSource(data);
-        });
-    $.getJSON('TrackerServlet?action=vendor&vendor=Worldly%20Wines', function(data) {
-    	chart_magnolia.setDataSource(data);
-        });
+//    $.getJSON('TrackerServlet?action=vendor&vendor=Better%20Brews', function(data) {
+//    	chart_popcorn.setDataSource(data);
+//        });
+//    $.getJSON('TrackerServlet?action=vendor&vendor=Worldly%20Wines', function(data) {
+//    	chart_magnolia.setDataSource(data);
+//        });
 }
 
 
-setInterval(function(){new_data()}, 5000);
+setInterval(function(){new_data()}, 2000);
 
 
 </script>        
@@ -177,12 +209,12 @@ setInterval(function(){new_data()}, 5000);
 <div id="VendorSummary" style="width:500px;height:300px;display:inline-block"></div>
 </p>
 
-<h3><strong>Better Brews</strong></h3> <a href="vendor.jsp?vendor=Better%20Brews">View Products</a>
+<div id="vendor1"></div>
 <p>
 <div id="Popcorn" style="width:900px;height:300px;display:inline-block"></div>
 </p>
 
-<h3><strong>Worldly Wines</strong></h3> <a href="vendor.jsp?vendor=Worldly%20Wines">View Products</a>
+<div id="vendor2"></div>
 <p>
 <div id="Magnolia" style="width:900px;height:300px;display:inline-block"></div>
 </p>

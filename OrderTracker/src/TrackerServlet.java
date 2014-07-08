@@ -21,7 +21,9 @@ public class TrackerServlet extends HttpServlet {
     public TrackerServlet() {
         super();
         // TODO Auto-generated constructor stub
-        String nodes[] = {"ras1"};
+        //String nodes[] = {"ras1"};
+        //String nodes[] = {"localhost"};
+        String nodes[] = {"172.16.232.146"};
 		db = new Database(nodes, "simulation");
     }
 
@@ -83,7 +85,7 @@ public class TrackerServlet extends HttpServlet {
 	}
 	
 	public void doProductSales(HttpServletRequest request, HttpServletResponse response) throws IOException{
-		response.getWriter().write(db.getProductDetail(request.getParameter("product_id")));
+		response.getWriter().write(db.getProductSummary(request.getParameter("vendor"), request.getParameter("product_id")));
 	}	
 	
 	public void doProduct(HttpServletRequest request, HttpServletResponse response) throws IOException{
