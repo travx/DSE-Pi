@@ -20,6 +20,7 @@ public class PiGlow {
     private static final byte CMD_ALL = (byte) 0xff;
 
     private final I2CDevice device;
+    
 
     public PiGlow() {
         device = initializeDevice();
@@ -47,6 +48,11 @@ public class PiGlow {
         device.write(CMD_SET_PWM_VALUES, lightOnArray(lightnrs), 0, 18);
         device.write(CMD_UPDATE, CMD_ALL);
     } 
+    
+    public void shineLights(byte[] lightnrs) throws IOException{
+        device.write(CMD_SET_PWM_VALUES, lightnrs, 0, 18);
+        device.write(CMD_UPDATE, CMD_ALL);
+    }     
 
     private static byte[] lightOnArray(byte brightness, int... lightnrs) {
         byte[] result = new byte[18];
