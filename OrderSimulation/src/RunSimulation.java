@@ -27,9 +27,10 @@ public class RunSimulation {
 		
 		System.out.println("Connecting to Cluster.");
 		
-		//String nodes[] = {"ras1"};
+		String nodes[] = {"ras1", "ras11"};
 		//String nodes[] = {"ubuntu"};
-		String nodes[] = {"localhost"};
+		//String nodes[] = {"172.16.232.146"};
+		//String nodes[] = {"localhost"};
 		Database db = new Database(nodes, "simulation");
 		
 		System.out.println("Success! Cluster connection established. Ready to process orders.");
@@ -41,7 +42,12 @@ public class RunSimulation {
 				
 		List<ProductPrice> productprices = db.getProductPrices();
 		
-		for (int i=1; i<=ITERATIONS; i++){
+		for (int i=0; i!=ITERATIONS; i++){
+			
+			if (i%10==0){
+				System.out.println("Iterations Completed: " + i + "     Orders Processed: " + ORDERS);
+			}	
+			
 			for (ProductPrice pp : productprices){
 				if (rand.nextDouble() < pp.getOrderPct()){
 					//System.out.println(pp.getProduct_id());
@@ -53,13 +59,11 @@ public class RunSimulation {
 				Thread.sleep(WAIT);
 				
 			}
-			
-			if (i%10==0){
-				System.out.println("Iterations Completed: " + i + "     Orders Processed: " + ORDERS);
-			}			
+					
 		}
 		
 		System.out.println("Simulation Complete.");
+		System.out.println("Total Orders Processed: " + ORDERS);
 	}
 
 }

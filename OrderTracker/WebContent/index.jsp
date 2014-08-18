@@ -24,8 +24,20 @@ var profit = [0,0];
 var tot_revenue = [0,0];
 var tot_profit = [0,0];
 var vendor = ["Vendor1", "Vendor2"];
+var ymin;
+var ymax;
+var ymax1;
+var ymax2;
 
 function loadPage(){
+	ymin = <%=request.getParameter("ymin")%>;
+	ymax = <%=request.getParameter("ymax")%>;
+	if (ymin==null) ymin=0;
+	if (ymax==null) ymax=100;
+	
+	ymax1=ymax;
+	ymax2=ymax;
+	
 	initial_data();
 	loadSummary();
 	loadVendorSummary();
@@ -66,8 +78,8 @@ function loadPopcorn(){
 	chart_popcorn.setGallery(cfx.Gallery.Lines);  
 	
 	var axisY = chart_popcorn.getAxisY();
-	axisY.setMin(0);
-	axisY.setMax(15000);
+	axisY.setMin(ymin);
+	axisY.setMax(ymax);
 	
 	var data = chart_popcorn.getData();
 	data.setPoints(20);
@@ -90,8 +102,8 @@ function loadMagnolia(){
 	chart_magnolia.setGallery(cfx.Gallery.Lines);
 	
 	var axisY = chart_magnolia.getAxisY();
-	axisY.setMin(0);
-	axisY.setMax(15000);
+	axisY.setMin(ymin);
+	axisY.setMax(ymax);
 	
 	var data = chart_magnolia.getData();
 	data.setPoints(20);
@@ -141,26 +153,45 @@ function new_data(){
     		profit[index] = element.profit - tot_profit[index];
     		tot_profit[index] = element.profit;
     	});
-    	chart_popcorn.getRealTime().beginAddData(1, cfx.RealTimeAction.Append);
-    	chart_popcorn.getData().setItem(0,0,revenue[0]);
-    	chart_popcorn.getData().setItem(1,0,profit[0]);
-    	chart_popcorn.getRealTime().endAddData(false,false);
     	
-    	chart_magnolia.getRealTime().beginAddData(1, cfx.RealTimeAction.Append);
-    	chart_magnolia.getData().setItem(0,0,revenue[1]);
-    	chart_magnolia.getData().setItem(1,0,profit[1]);
-    	chart_magnolia.getRealTime().endAddData(false,false);
+    	if (Math.max(revenue[0], profit[0]) > ymax1){
+    		set_yaxis1(Math.max(revenue[0], profit[0]) * 1.5);
+    	}
+    	
+    	if (Math.max(revenue[1], profit[1]) > ymax2){
+    		set_yaxis2(Math.max(revenue[1], profit[1]) * 1.5);
+    	}  	
+    	
+    	if (revenue[0] > 0){
+        	chart_popcorn.getRealTime().beginAddData(1, cfx.RealTimeAction.Append);
+        	chart_popcorn.getData().setItem(0,0,revenue[0]);
+        	chart_popcorn.getData().setItem(1,0,profit[0]);
+        	chart_popcorn.getRealTime().endAddData(false,false);    		
+    	}
+	
+    	if (revenue[1] > 0){
+        	chart_magnolia.getRealTime().beginAddData(1, cfx.RealTimeAction.Append);
+        	chart_magnolia.getData().setItem(0,0,revenue[1]);
+        	chart_magnolia.getData().setItem(1,0,profit[1]);
+        	chart_magnolia.getRealTime().endAddData(false,false);    		
+    	}
+
         });
-//    $.getJSON('TrackerServlet?action=vendor&vendor=Better%20Brews', function(data) {
-//    	chart_popcorn.setDataSource(data);
-//        });
-//    $.getJSON('TrackerServlet?action=vendor&vendor=Worldly%20Wines', function(data) {
-//    	chart_magnolia.setDataSource(data);
-//        });
 }
 
 
-setInterval(function(){new_data()}, 2000);
+function set_yaxis1(newymax){
+	ymax1 = newymax;
+	chart_popcorn.getAxisY().setMax(ymax1);	
+}
+
+function set_yaxis2(newymax){
+	ymax2 = newymax;	
+	chart_magnolia.getAxisY().setMax(ymax2);
+}
+
+
+setInterval(function(){new_data();}, 2000);
 
 
 </script>        
